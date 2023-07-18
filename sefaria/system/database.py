@@ -12,7 +12,10 @@ if hasattr(sys, '_doc_build'):
 else:
     # TEST_DB = SEFARIA_DB + "_test"
     TEST_DB = SEFARIA_DB 
+    print(">>> connecting to DB")
     client = pymongo.MongoClient(MONGO_HOST, MONGO_PORT)
+    print(">>> connected to DB")
+    print(client)
 
     if not hasattr(sys, '_called_from_test'):
         db = client[SEFARIA_DB]
@@ -23,8 +26,11 @@ else:
         if SEFARIA_DB_USER and SEFARIA_DB_PASSWORD:
             db.authenticate(SEFARIA_DB_USER, SEFARIA_DB_PASSWORD)
 
+    print(">>> connected to DB", db)
+
 
 def get_test_db():
+    print(">> calling get test DB")
     return client[TEST_DB]
 
 
@@ -149,9 +155,11 @@ def ensure_indices(active_db=None):
         ('vstate', ["title"], {}),
         ('vstate', ["flags.enComplete"], {}),
     ]
-
+    print(">> ensure indices")
     for col, args, kwargs in indices:
         try:
             getattr(active_db, col).create_index(*args, **kwargs)
         except OperationFailure as e:
             print("Collection: {}, args: {}, kwargs: {}\n{}".format(col, args, kwargs, e))
+    print("<<< done ensuring indices")
+
