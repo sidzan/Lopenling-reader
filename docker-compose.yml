@@ -1,28 +1,16 @@
 version: '3.8'
+
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
+  sefaria:
+    image: ghcr.io/sidzan/sidzan/sefaria:latest
+    container_name: sefaria-local
     ports:
-      - 27017:27017
-    volumes:
-      - ./tmp/dump:/dump
-      - ./tmp/data:/data/db
-  redis:
-    image: redis:6.2-alpine
-    container_name: redis
-    restart: always
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-    volumes:
-      - ./tmp/redis:/data
-  redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
-    image: rediscommander/redis-commander:latest
-    restart: always
+      - "8000:8000"
     environment:
-      - REDIS_HOSTS=local:redis:6379
-    ports:
-      - "8081:8081"
+      - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
+      - MONGO_HOST=${MONGO_HOST}
+      - POSTGRESQL_DATABASE_NAME=${POSTGRESQL_DATABASE_NAME}
+      - POSTGRESQL_HOST=${POSTGRESQL_HOST}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - REDIS_HOST=${REDIS_HOST}
